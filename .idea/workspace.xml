@@ -11,6 +11,11 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -29,12 +34,13 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "feature/description",
     "last_opened_file_path": "/Users/yaroslavmaslov/Documents/GitHub/Ruby-Rake-script",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "ruby.rails.projectView.checked": "true",
     "ruby.structure.view.model.defaults.configured": "true",
     "vue.rearranger.settings.migration": "true"
@@ -93,6 +99,9 @@
       <list>
         <item itemvalue="Rake.docker:remove_image: Ruby-Rake-script" />
         <item itemvalue="Rake.docker:pull_image: Ruby-Rake-script" />
+        <item itemvalue="Rake.docker:remove_image: Ruby-Rake-script" />
+        <item itemvalue="Rake.docker:pull_image: Ruby-Rake-script" />
+        <item itemvalue="Rake.docker:remove_image: Ruby-Rake-script" />
       </list>
     </recent_temporary>
   </component>
@@ -107,6 +116,7 @@
       <updated>1698747997977</updated>
       <workItem from="1698748000634" duration="327000" />
       <workItem from="1699275293227" duration="740000" />
+      <workItem from="1699352948805" duration="2785000" />
     </task>
     <servers />
   </component>

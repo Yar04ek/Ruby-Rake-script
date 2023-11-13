@@ -2,7 +2,7 @@ require_relative 'test_data'
 
 namespace :docker do
   desc "Download Docker image"
-  task :pull_image do
+  task :pull_run do
     version = ENV.fetch('DOCKER_IMAGE_VERSION', 'latest')
     image_name = "onlyoffice/4testing-documentserver-ee:#{version}"
 
@@ -11,7 +11,7 @@ namespace :docker do
   end
 
   desc "Remove Docker container and image"
-  task :remove_container_and_image do
+  task :stop_remove do
     sh "docker stop my_container"
     sh "docker rm my_container"
     version = ENV.fetch('DOCKER_IMAGE_VERSION', 'latest')
