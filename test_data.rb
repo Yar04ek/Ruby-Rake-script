@@ -16,6 +16,6 @@ TEST_DATA = [
   {
     versions: ['7.6.0.30'],
     download: false,
-    containers: 1
+    containers: 0
   }
 ].freeze
