@@ -13,12 +13,12 @@ class ContainerManager
   end
 
   def download_image
-    image_name = @data[:image_name]
+    image_name = "#{@data[:image_name]}:#{@data[:version]}"
     run_system_cmd("docker pull #{image_name}")
   end
 
   def start_container(version)
-    image_name = @data[:image_name]
+    image_name = "#{@data[:image_name]}:#{version}"
     container_name = "#{image_name}_#{version}_#{rand(1..10_000)}"
     run_system_cmd("docker run -d --name #{container_name} -p 80:80 #{image_name}")
   end
