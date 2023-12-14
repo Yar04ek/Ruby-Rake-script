@@ -1,46 +1,75 @@
 # frozen_string_literal: true
 
 require 'open3'
-# The ContainerManager class supports Docker image operations,
-# such as downloading images, starting containers and removing containers and images.
-class ContainerManager
-  DOCKER_KILL_CMD = 'docker kill $(docker ps -q)'
-  DOCKER_RM_CMD = 'docker rm $(docker ps -a -q)'
-  DOCKER_RMI_CMD = 'docker rmi $(docker images -q)'
+# This module is used to handle system commands execution
+module SystemCommandExecutor
+  def self.run_system_cmd(cmd)
+    stdout, stderr, status = Open3.capture3(cmd)
+    raise "Command execution failed: #{cmd}. Error: #{stderr}" unless status.success?
 
+    stdout.strip
+  end
+end
+
+# This class manages Docker images
+class DockerImageManager
+  extend SystemCommandExecutor
+
+  def initialize(image_name)
+    @image_name = image_name
+  end
+
+  def download
+    SystemCommandExecutor.run_system_cmd("docker pull #{@image_name}")
+  end
+end
+
+# This class manages Docker containers
+class DockerContainerManager
+  extend SystemCommandExecutor
+
+  def initialize(container_name, image_name)
+    @container_name = container_name
+    @image_name = image_name
+  end
+
+  def start
+    SystemCommandExecutor.run_system_cmd("docker run -d -p 80:80 --name #{@container_name} #{@image_name}")
+  end
+
+  def self.stop_all
+    SystemCommandExecutor.run_system_cmd('docker kill $(docker ps -q)')
+    SystemCommandExecutor.run_system_cmd('docker rm $(docker ps -a -q)')
+  end
+
+  def self.remove_all_images
+    SystemCommandExecutor.run_system_cmd('docker rmi -f $(docker images -q)')
+  end
+end
+
+# This class orchestrates the management of containers
+class ContainerOrchestrator
   def initialize(data)
     @data = data
   end
 
-  def download_image
-    image_name = "#{@data[:image_name]}:#{@data[:version]}"
-    run_system_cmd("docker pull #{image_name}")
-  end
-
-  def start_container(version)
-    image_name = "#{@data[:image_name]}:#{version}"
-    container_name = "#{image_name}_#{version}_#{rand(1..10_000)}"
-    run_system_cmd("docker run -d --name #{container_name} -p 80:80 #{image_name}")
-  end
-
-  def run_containers
+  def orchestrate
     @data[:versions].each do |version|
-      next unless download_image
+      image_name = "onlyoffice/4testing-documentserver-ee:#{version}"
+      image_manager = DockerImageManager.new(image_name)
+      image_manager.download if @data[:download]
 
-      @data[:containers].times { start_container(version) }
+      @data[:containers].times do
+        container_name = generate_container_name(image_name, version)
+        container_manager = DockerContainerManager.new(container_name, image_name)
+        container_manager.start
+      end
     end
   end
 
-  def remove_containers_and_images
-    run_system_cmd(DOCKER_KILL_CMD)
-    run_system_cmd(DOCKER_RM_CMD)
-    run_system_cmd(DOCKER_RMI_CMD)
-  end
+  private
 
-  def run_system_cmd(cmd)
-    stdout, stderr, status = Open3.capture3(cmd)
-    raise "Failed executing command: #{cmd}. Error: #{stderr}" unless status.success?
-
-    stdout.strip
+  def generate_container_name(image_name, version)
+    "#{image_name.split('/').last.gsub(':', '_')}_#{version}_#{rand(1..10_000)}"
   end
 end
