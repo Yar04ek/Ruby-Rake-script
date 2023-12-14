@@ -1,4 +1,4 @@
-name: test_and_build
+name: CI
 
 on: [push]
 
@@ -15,8 +15,19 @@ jobs:
         with:
           ruby-version: 3.2.2
 
-      - name: Build and test with Rake
+      - name: Install dependencies and run tasks
         run: |
           gem install bundler
+          NBR_RUNNING_CONTAINERS=$(docker ps | wc -l)
           bundle install --jobs 4 --retry 3
-          bundle exec rake
+          bundle exec rake docker:run
+          # Sleep for a while to let the container start
+          sleep 120
+          # Check that the number of running containers has increased
+          if (( $(docker ps | wc -l) > NBR_RUNNING_CONTAINERS )); then
+            echo "At least one new container is running"
+            bundle exec rake docker:rmi
+          else
+            echo "No new container is running"
+            exit 1
+          fi
